@@ -1,4 +1,4 @@
-const CACHE_NAME = 'log-lapangan-v1';
+const CACHE_NAME = 'wilkerstat-v2';
 const APP_SHELL = [
   './',
   './index.html',
@@ -23,9 +23,11 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Strategi: app shell (HTML/manifest/ikon) pakai cache-first supaya tetap bisa
-// dibuka offline. Untuk tile peta & panggilan API eksternal, biarkan selalu
-// mengambil dari jaringan (karena datanya besar & sering berubah).
+// Strategi: NETWORK-FIRST untuk app shell (HTML/manifest/ikon) — selalu coba
+// ambil versi terbaru dari server dulu setiap kali dibuka. Kalau berhasil,
+// simpan salinannya ke cache (buat jaga-jaga offline nanti). Kalau gagal
+// (offline / tidak ada sinyal), baru pakai salinan cache terakhir.
+// Ini mencegah versi lama "nyangkut" terus tiap kali ada update file baru.
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
   const isAppShell = url.origin === self.location.origin;
@@ -33,12 +35,12 @@ self.addEventListener('fetch', (event) => {
   if (!isAppShell) return; // biarkan browser tangani (tile peta, API IP, dsb)
 
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      return cached || fetch(event.request).then((response) => {
+    fetch(event.request)
+      .then((response) => {
         const clone = response.clone();
         caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
         return response;
-      }).catch(() => cached);
-    })
+      })
+      .catch(() => caches.match(event.request))
   );
 });

@@ -1,7 +1,7 @@
 {
-  "name": "Log Lapangan - Peta Tagging RT",
-  "short_name": "Log Lapangan",
-  "description": "Peta tagging bangunan dengan layer batas RT",
+  "name": "Peta Batas Wilkerstat",
+  "short_name": "Wilkerstat",
+  "description": "Tagging bangunan & batas wilayah kerja statistik (SLS/RT)",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
