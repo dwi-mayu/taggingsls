@@ -1,8 +1,9 @@
-const CACHE_NAME = 'wilkerstat-v4';
+const CACHE_NAME = 'wilkerstat-v8';
 const APP_SHELL = [
   './',
   './index.html',
   './manifest.json',
+  './default-boundary.json',
   './icon-192.png',
   './icon-512.png'
 ];
