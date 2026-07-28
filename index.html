@@ -328,21 +328,25 @@
   .leaflet-interactive{ outline:none; }
   .leaflet-interactive:focus{ outline:none; }
 
-  /* Marker label */
+  /* Marker label — dipertebal & latar dibuat lebih pekat (bukan transparan tipis)
+     supaya tetap kebaca jelas di atas citra satelit yang ramai warna/tekstur. */
   .pin-label{
-    font-family:'IBM Plex Sans',sans-serif; font-size:11.5px; font-weight:600;
-    color:var(--ink); background:rgba(250,247,240,0.72);
-    padding:2px 7px; border-radius:4px; border:1px solid rgba(216,208,190,0.7);
-    white-space:nowrap; box-shadow:0 1px 3px rgba(0,0,0,0.1); text-shadow:0 1px 2px rgba(255,255,255,0.5);
+    font-family:'IBM Plex Sans',sans-serif; font-size:12.5px; font-weight:700;
+    color:var(--ink); background:rgba(255,253,248,0.94);
+    padding:3px 8px; border-radius:5px; border:1px solid rgba(216,208,190,0.9);
+    white-space:nowrap; box-shadow:0 1px 4px rgba(0,0,0,0.22); letter-spacing:0.1px;
   }
   .leaflet-tooltip.pin-label::before{display:none;}
 
-  /* Label nama batas RT (default/fallback) */
+  /* Label nama batas RT (default/fallback) — sebelumnya IBM Plex Mono 11px dengan
+     latar transparan 45% terlalu tipis untuk dibaca di atas citra satelit; diganti
+     ke IBM Plex Sans lebih tebal, ukuran naik, latar dipekatkan + outline warna
+     senada supaya label tetap menonjol di basemap apapun. */
   .rt-label{
-    font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600;
-    color:var(--rt-red); background:rgba(250,247,240,0.45);
-    padding:1px 6px; border-radius:3px; border:1px solid rgba(214,54,42,0.3);
-    white-space:nowrap; text-shadow:0 1px 2px rgba(255,255,255,0.6);
+    font-family:'IBM Plex Sans',sans-serif; font-size:12.5px; font-weight:700;
+    color:var(--rt-red); background:rgba(255,253,248,0.92);
+    padding:2.5px 8px; border-radius:4px; border:1.5px solid rgba(214,54,42,0.55);
+    white-space:nowrap; box-shadow:0 1px 4px rgba(0,0,0,0.2); letter-spacing:0.1px;
   }
   .leaflet-tooltip.rt-label::before{display:none;}
 
@@ -426,12 +430,14 @@
   .legend-btn:hover{ background:var(--parchment); border-color:var(--line); }
   .legend-btn.legend-delete:hover{ color:var(--rust); border-color:var(--rust); }
 
-  /* Label batas hasil gambar sendiri — warna beda supaya jelas mana yang dibuat sendiri */
+  /* Label batas hasil gambar sendiri — warna beda supaya jelas mana yang dibuat
+     sendiri; font & kontras disamakan dengan .rt-label agar tetap kebaca jelas
+     di atas citra satelit. */
   .rt-label-drawn{
-    font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600;
-    color:var(--rt-blue); background:rgba(250,247,240,0.45);
-    padding:1px 6px; border-radius:3px; border:1px solid rgba(10,132,255,0.45);
-    white-space:nowrap; text-shadow:0 1px 2px rgba(255,255,255,0.6);
+    font-family:'IBM Plex Sans',sans-serif; font-size:12.5px; font-weight:700;
+    color:var(--rt-blue); background:rgba(255,253,248,0.92);
+    padding:2.5px 8px; border-radius:4px; border:1.5px solid rgba(10,132,255,0.55);
+    white-space:nowrap; box-shadow:0 1px 4px rgba(0,0,0,0.2); letter-spacing:0.1px;
   }
   .leaflet-tooltip.rt-label-drawn::before{display:none;}
 
@@ -597,7 +603,11 @@ if(!window.storage){
 }
 
 (async function(){
-  const map = L.map('map', {zoomControl:false}).setView([-6.2088, 106.8456], 14);
+  // preferCanvas:true — dengan ratusan poligon batas SLS/RT, render lewat <canvas>
+  // jauh lebih ringan daripada default SVG (satu elemen DOM per poligon). Efeknya
+  // paling terasa saat pan/zoom di HP: jadi jauh lebih mulus, terutama HP kelas
+  // menengah-bawah dengan banyak layer master ditumpuk.
+  const map = L.map('map', {zoomControl:false, preferCanvas:true}).setView([-6.2088, 106.8456], 14);
   L.control.zoom({position:'topright'}).addTo(map);
 
   // ---------- Basemap (bisa diganti-ganti, tidak cuma Google Hybrid) ----------
@@ -960,12 +970,30 @@ if(!window.storage){
     renderMasterLegend();
   }
 
-  async function persistMasterLayers(){
-    const entries = masterLayers.map(m => ({
-      id: m.id, name: m.name, color: m.color, visible: m.visible !== false,
-      geojson: m.group.toGeoJSON()
-    }));
-    await saveMasterLayersData(entries);
+  // Menyusun ulang geojson semua layer master (toGeoJSON) + JSON.stringify bisa
+  // lumayan berat kalau layer default (607 SLS) ikut ditumpuk. Supaya tombol
+  // (toggle/hapus layer) tetap terasa instan, pekerjaan berat ini digeser ke luar
+  // event klik langsung — lewat requestIdleCallback kalau tersedia, browser lain
+  // (mis. Safari) fallback ke setTimeout — bukan menghilangkan pekerjaannya, cuma
+  // supaya tidak nge-freeze UI di frame yang sama saat pengguna menekan tombol.
+  let persistMasterLayersTimer = null;
+  function persistMasterLayers(){
+    clearTimeout(persistMasterLayersTimer);
+    return new Promise(resolve=>{
+      const run = async ()=>{
+        const entries = masterLayers.map(m => ({
+          id: m.id, name: m.name, color: m.color, visible: m.visible !== false,
+          geojson: m.group.toGeoJSON()
+        }));
+        await saveMasterLayersData(entries);
+        resolve();
+      };
+      if('requestIdleCallback' in window){
+        requestIdleCallback(run, {timeout:1500});
+      } else {
+        persistMasterLayersTimer = setTimeout(run, 60);
+      }
+    });
   }
 
   // Render batas hasil gambar sendiri yang tersimpan sebelumnya — masuk ke featureGroup yang editable
