@@ -373,11 +373,25 @@
   }
 
   /* Legenda layer master di sidebar */
-  #masterLegend{ margin-top:8px; display:flex; flex-direction:column; gap:5px; }
+  #masterLegend{ margin-top:8px; display:flex; flex-direction:column; gap:3px; }
   .legend-item{
     display:flex; align-items:center; gap:7px; font-size:12px; color:var(--ink-soft);
+    padding:4px 2px; border-radius:5px;
   }
+  .legend-item.is-hidden{ opacity:0.45; }
   .legend-dot{ width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+  .legend-name{
+    flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  }
+  .legend-item.is-hidden .legend-name{ text-decoration:line-through; }
+  .legend-btn{
+    flex-shrink:0; width:24px; height:24px; border-radius:5px; border:1px solid transparent;
+    background:transparent; color:var(--ink-soft); font-size:13px; line-height:1;
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+    transition:background .15s ease, border-color .15s ease;
+  }
+  .legend-btn:hover{ background:var(--parchment); border-color:var(--line); }
+  .legend-btn.legend-delete:hover{ color:var(--rust); border-color:var(--rust); }
 
   /* Label batas hasil gambar sendiri — warna beda supaya jelas mana yang dibuat sendiri */
   .rt-label-drawn{
@@ -700,8 +714,11 @@ if(!window.storage){
     props = props || {};
     const base = props.nmsls || props.name || props.RT || props.NAMA || props.rt;
     const sub = props.kdsubsls || props.subsls;
+    const desa = props.nmdesa || props.kelurahan || props.desa || props.NMDESA;
     if(!base) return null;
-    return sub ? `${base} sub ${sub}` : String(base);
+    let lbl = sub ? `${base} sub ${sub}` : String(base);
+    if(desa) lbl += ` — ${desa}`;
+    return lbl;
   }
 
   function masterLayersFeatureCount(){
@@ -719,34 +736,84 @@ if(!window.storage){
     if(!box) return;
     if(masterLayers.length === 0){ box.innerHTML=''; return; }
     box.innerHTML = masterLayers.map(m=>`
-      <div class="legend-item">
-        <span class="legend-dot" style="background:${m.color};"></span>${escapeHtml(m.name)}
+      <div class="legend-item${m.visible===false ? ' is-hidden' : ''}" data-id="${m.id}">
+        <span class="legend-dot" style="background:${m.color};"></span>
+        <span class="legend-name" title="${escapeHtml(m.name)}">${escapeHtml(m.name)}</span>
+        <button type="button" class="legend-btn legend-toggle" data-action="toggle" title="${m.visible===false ? 'Tampilkan layer' : 'Sembunyikan layer'}">${m.visible===false ? '🚫' : '👁'}</button>
+        <button type="button" class="legend-btn legend-delete" data-action="delete" title="Hapus layer">🗑</button>
       </div>
     `).join('');
+    box.querySelectorAll('.legend-item').forEach(itemEl=>{
+      const id = itemEl.dataset.id;
+      const toggleBtn = itemEl.querySelector('[data-action="toggle"]');
+      const deleteBtn = itemEl.querySelector('[data-action="delete"]');
+      if(toggleBtn) toggleBtn.addEventListener('click', ()=> toggleMasterLayer(id));
+      if(deleteBtn) deleteBtn.addEventListener('click', ()=> deleteMasterLayer(id));
+    });
+  }
+
+  // Label batas ditampilkan sementara (bukan permanen) — hanya muncul saat wilayahnya
+  // di-tap atau saat dipilih lewat menu Cari Wilayah, lalu memudar sendiri.
+  let openBoundaryTooltipLayer = null;
+  let openBoundaryTooltipTimer = null;
+  function showBoundaryLabel(layer, duration){
+    if(openBoundaryTooltipLayer && openBoundaryTooltipLayer !== layer){
+      try{ openBoundaryTooltipLayer.closeTooltip(); }catch(e){}
+    }
+    clearTimeout(openBoundaryTooltipTimer);
+    try{ layer.openTooltip(); }catch(e){}
+    openBoundaryTooltipLayer = layer;
+    openBoundaryTooltipTimer = setTimeout(()=>{
+      try{ layer.closeTooltip(); }catch(e){}
+      if(openBoundaryTooltipLayer === layer) openBoundaryTooltipLayer = null;
+    }, duration || 4000);
   }
 
   // Tambah satu layer master baru (menumpuk di atas layer master lain yang sudah ada)
-  function addMasterLayer(geojson, name, colorOverride){
+  function addMasterLayer(geojson, name, colorOverride, visible){
     const idx = masterLayers.length % MASTER_COLORS.length;
     const color = colorOverride || MASTER_COLORS[idx];
-    const group = L.featureGroup().addTo(map);
+    const isVisible = visible !== false;
+    const group = L.featureGroup();
+    if(isVisible) group.addTo(map);
     let unnamedCount = 0;
     L.geoJSON(geojson, {
-      style: {color, weight:3, fillOpacity:0, interactive:false},
+      style: {color, weight:3, fillOpacity:0.05},
       onEachFeature: (feature, layer) => {
         let lbl = labelForBoundary(feature.properties);
         if(!lbl){ unnamedCount++; lbl = 'Batas ' + unnamedCount; }
         layer.bindTooltip(String(lbl), {
-          permanent:true, direction:'center',
+          permanent:false, direction:'center', sticky:false,
           className:'rt-label rt-label-c' + idx
         });
+        // Label hanya tampil saat wilayah di-tap, bukan terus-menerus
+        layer.on('click', ()=> showBoundaryLabel(layer));
         group.addLayer(layer);
       }
     });
     const id = 'master_' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
-    masterLayers.push({ id, name: name || ('Layer ' + (masterLayers.length+1)), color, group });
+    masterLayers.push({ id, name: name || ('Layer ' + (masterLayers.length+1)), color, group, visible: isVisible });
     renderMasterLegend();
     return { id, color, group };
+  }
+
+  function toggleMasterLayer(id){
+    const m = masterLayers.find(x=>x.id===id);
+    if(!m) return;
+    m.visible = !m.visible;
+    if(m.visible){ m.group.addTo(map); } else { map.removeLayer(m.group); }
+    renderMasterLegend();
+    persistMasterLayers();
+  }
+
+  function deleteMasterLayer(id){
+    const m = masterLayers.find(x=>x.id===id);
+    if(!m) return;
+    if(!confirm(`Hapus layer "${m.name}"? Batas wilayah di layer ini akan dihapus dari peta.`)) return;
+    map.removeLayer(m.group);
+    masterLayers = masterLayers.filter(x=>x.id!==id);
+    renderMasterLegend();
+    persistMasterLayers();
   }
 
   function clearAllMasterLayers(){
@@ -757,7 +824,8 @@ if(!window.storage){
 
   async function persistMasterLayers(){
     const entries = masterLayers.map(m => ({
-      id: m.id, name: m.name, color: m.color, geojson: m.group.toGeoJSON()
+      id: m.id, name: m.name, color: m.color, visible: m.visible !== false,
+      geojson: m.group.toGeoJSON()
     }));
     await saveMasterLayersData(entries);
   }
@@ -1404,6 +1472,12 @@ if(!window.storage){
             radius:10, color:'#fff', weight:3, fillColor:'#FFC94A', fillOpacity:1
           }).addTo(map);
 
+          // Tampilkan juga label wilayahnya (nama RT/SLS + kelurahan) saat dipilih dari pencarian.
+          // Label batas gambar sendiri sudah selalu tampil, jadi tidak perlu disentuh di sini.
+          if(m.source !== 'Gambar sendiri' && typeof m.layer.openTooltip === 'function'){
+            showBoundaryLabel(m.layer, 5000);
+          }
+
           let blinks = 0;
           const blinkTimer = setInterval(()=>{
             blinks++;
@@ -1451,7 +1525,7 @@ if(!window.storage){
 
   const savedMasters = await loadMasterLayersData();
   if(savedMasters && savedMasters.length){
-    savedMasters.forEach(m => addMasterLayer(m.geojson, m.name, m.color));
+    savedMasters.forEach(m => addMasterLayer(m.geojson, m.name, m.color, m.visible));
   } else {
     // belum ada format baru — coba migrasi dari format lama (satu layer base tunggal)
     const legacyBase = await loadLegacyBaseBoundary();
