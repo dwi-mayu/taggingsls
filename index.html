@@ -314,6 +314,37 @@
   .status-toggle button.sel-belum{background:rgba(166,75,63,0.12); border-color:var(--rust); color:var(--rust); font-weight:600;}
   .form-actions{display:flex; gap:8px; margin-top:16px;}
   .form-actions .btn{margin-bottom:0;}
+  .nav-buttons{display:flex; gap:8px;}
+  .nav-buttons .nav-btn{margin-bottom:0; font-size:12.5px; padding:9px 8px; border-color:var(--sage); color:var(--sage);}
+  .nav-buttons .nav-btn:hover{background:rgba(107,143,113,0.1);}
+
+  #navPanel{
+    position:absolute; top:14px; left:50%; transform:translateX(-50%);
+    z-index:1300; max-width:calc(100vw - 32px);
+  }
+  .nav-panel-inner{
+    display:flex; align-items:center; gap:10px;
+    background:var(--ink); color:var(--page); border-radius:10px;
+    padding:10px 14px; box-shadow:0 6px 18px rgba(0,0,0,0.3);
+  }
+  .nav-arrow{ font-size:22px; color:#F5A623; transition:transform .3s ease; flex-shrink:0; }
+  .nav-info{ display:flex; flex-direction:column; line-height:1.3; }
+  .nav-info strong{ font-size:15px; }
+  .nav-info span{ font-size:11px; color:rgba(250,247,240,0.75); }
+  .nav-panel-inner button{
+    background:transparent; border:none; color:rgba(250,247,240,0.6); cursor:pointer;
+    font-size:14px; padding:2px 4px; flex-shrink:0;
+  }
+  .nav-panel-inner button:hover{ color:var(--page); }
+
+  .popup-nav-wrap{ font-family:'IBM Plex Sans',sans-serif; min-width:150px; }
+  .popup-nav-label{ font-size:12.5px; font-weight:600; color:var(--ink); margin-bottom:6px; }
+  .popup-nav-buttons{ display:flex; gap:6px; }
+  .popup-nav-buttons button{
+    flex:1; padding:6px 4px; font-size:11.5px; border-radius:5px; cursor:pointer;
+    border:1px solid var(--sage); background:var(--page); color:var(--sage); font-family:'IBM Plex Sans',sans-serif;
+  }
+  .popup-nav-buttons button:hover{ background:rgba(107,143,113,0.12); }
 
   #loading{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:var(--page); z-index:500; font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--ink-soft);}
 
@@ -363,19 +394,21 @@
 
   .boundary-tools-control{ position:relative; }
   .boundary-tools-btn{
-    display:flex; align-items:center; gap:6px; padding:0 11px; height:30px;
+    display:flex; align-items:center; justify-content:center; gap:3px;
+    width:34px; height:34px; padding:0;
     background:var(--page); border:none; cursor:pointer; font-family:'IBM Plex Sans',sans-serif;
-    font-size:12.5px; font-weight:500; color:var(--ink); white-space:nowrap;
+    font-size:16px; font-weight:500; color:var(--ink); white-space:nowrap;
   }
   .boundary-tools-btn:hover{ background:#f5f2ea; }
-  .boundary-tools-btn .chev{ font-size:9px; transition:transform .2s ease; }
+  .boundary-tools-btn .chev{ font-size:8px; transition:transform .2s ease; color:var(--ink-soft); }
   .boundary-tools-btn.open .chev{ transform:rotate(180deg); }
-  .boundary-tools-btn.active{ background:rgba(107,143,113,0.15); color:var(--sage); }
+  .boundary-tools-btn.active{ background:var(--sage); color:#fff; }
+  .boundary-tools-btn.active .chev{ color:#fff; }
 
   .boundary-tools-menu{
-    position:absolute; top:100%; right:0; margin-top:4px; min-width:210px;
+    position:absolute; top:0; right:calc(100% + 6px); min-width:220px;
     background:var(--page); border:1px solid var(--line); border-radius:8px;
-    box-shadow:0 8px 22px rgba(27,42,56,0.2); display:none; overflow:hidden; z-index:1500;
+    box-shadow:0 8px 24px rgba(27,42,56,0.28); display:none; overflow:hidden; z-index:5000;
   }
   .boundary-tools-menu.show{ display:block; }
   .boundary-tools-menu .bt-item{
@@ -386,15 +419,17 @@
   .boundary-tools-menu .bt-item:hover{ background:rgba(107,143,113,0.1); }
   .boundary-tools-menu .bt-item .bt-icon{ width:16px; text-align:center; font-size:14px; }
 
-  .boundary-tools-status{ display:flex; flex-direction:column; gap:8px; padding:12px; }
-  .boundary-tools-status p{ margin:0; font-size:11.5px; color:var(--ink-soft); line-height:1.4; }
+  .boundary-tools-status{ display:flex; flex-direction:column; gap:8px; padding:12px; background:var(--sage); }
+  .boundary-tools-status p{ margin:0; font-size:11.5px; color:#fff; line-height:1.4; }
   .boundary-tools-status .bt-actions{ display:flex; gap:6px; }
   .boundary-tools-status button{
     flex:1; padding:7px; border-radius:6px; font-size:12px; cursor:pointer; border:1px solid var(--line);
     font-family:'IBM Plex Sans',sans-serif; background:var(--page); color:var(--ink);
   }
-  .boundary-tools-status .bt-save{ background:var(--sage); color:#fff; border-color:var(--sage); }
-  .boundary-tools-status .bt-cancel{ color:var(--rust); border-color:var(--rust); }
+  .boundary-tools-status .bt-save{ background:#fff; color:var(--sage); border-color:#fff; font-weight:700; }
+  .boundary-tools-status .bt-cancel{ background:#fff; color:var(--rust); border-color:#fff; }
+  .boundary-tools-status.mode-delete{ background:var(--rust); }
+  .boundary-tools-status.mode-delete .bt-save{ color:var(--rust); }
 
   /* Copyright di sidebar */
   .sidebar-footer{
@@ -440,6 +475,14 @@
     white-space:nowrap; box-shadow:0 1px 4px rgba(0,0,0,0.2); letter-spacing:0.1px;
   }
   .leaflet-tooltip.rt-label-drawn::before{display:none;}
+
+  .footprint-label{
+    font-family:'IBM Plex Mono',monospace; font-size:11.5px; font-weight:700;
+    color:#8a5a12; background:rgba(255,253,248,0.92);
+    padding:2px 7px; border-radius:4px; border:1.5px solid rgba(245,166,35,0.65);
+    white-space:nowrap; box-shadow:0 1px 4px rgba(0,0,0,0.15);
+  }
+  .leaflet-tooltip.footprint-label::before{display:none;}
 
   /* Mobile / small screens */
   @media (max-width: 720px){
@@ -515,7 +558,7 @@
       <div class="controls-actions">
         <button class="btn primary" id="saveExportBtn">💾 Save &amp; Export Project</button>
       </div>
-      <div id="hint">Tekan &amp; tahan (~0,5 detik) di titik pada peta untuk menandai bangunan.<br><br>🖊️ Tombol "Alat Batas" di kanan atas peta untuk menggambar, mengedit bentuk, atau menghapus batas — hanya berlaku untuk batas yang kamu gambar sendiri.<br><br><span style="color:#D6362A;font-weight:600;">■</span> Merah = batas bawaan/upload &nbsp; <span style="color:#0A84FF;font-weight:700;">■</span> Biru = batas gambar sendiri</div>
+      <div id="hint">Tekan &amp; tahan (~0,5 detik) di titik pada peta untuk menandai bangunan.<br><br>🖊️ Tombol "Alat Batas" di kanan atas peta untuk menggambar, mengedit bentuk, atau menghapus batas — hanya berlaku untuk batas yang kamu gambar sendiri.<br><br>📐 Tombol "Ukur Bangunan" untuk menelusuri bentuk bangunan di citra satelit dan menghitung luasnya otomatis (m²).<br><br>🧭 Buka detail bangunan atau pilih hasil pencarian wilayah untuk memunculkan tombol navigasi (arah &amp; jarak langsung, atau buka di aplikasi Maps).<br><br><span style="color:#D6362A;font-weight:600;">■</span> Merah = batas bawaan/upload &nbsp; <span style="color:#0A84FF;font-weight:700;">■</span> Biru = batas gambar sendiri &nbsp; <span style="color:#F5A623;font-weight:700;">■</span> Oranye = bentuk bangunan</div>
     </div>
     <div class="sidebar-footer">© Mayu</div>
   </div>
@@ -552,6 +595,13 @@
       <label>Catatan</label>
       <textarea id="fNote" placeholder="Catatan tambahan (opsional)"></textarea>
     </div>
+    <div class="field" id="navRow" style="display:none;">
+      <label>Navigasi ke Titik Ini</label>
+      <div class="nav-buttons">
+        <button type="button" class="btn nav-btn" id="btnNavArrow">🧭 Arah &amp; Jarak</button>
+        <button type="button" class="btn nav-btn" id="btnNavMaps">🗺️ Buka di Maps</button>
+      </div>
+    </div>
     <div class="form-actions">
       <button class="btn danger" id="btnDelete" style="display:none;">Hapus</button>
       <button class="btn" id="btnCancel">Batal</button>
@@ -569,6 +619,28 @@
 // jadi di sini kita sediakan versi tiruannya yang memakai localStorage asli
 // milik browser — supaya data tetap tersimpan permanen di perangkat.
 if(!window.storage){
+  // Sebelumnya kalau localStorage penuh (quota exceeded — bisa terjadi kalau
+  // banyak layer master besar ditumpuk + batas/bangunan sendiri terus bertambah),
+  // localStorage.setItem melempar error yang cuma ditangkap diam-diam di bawah:
+  // penyimpanan gagal tanpa pengguna tahu sama sekali, dan perubahan terbaru bisa
+  // hilang begitu saja saat halaman ditutup. Sekarang ditambah pemberitahuan
+  // sekali (tidak berulang-ulang mengganggu) begitu penyimpanan pertama kali gagal.
+  let storageFullWarned = false;
+  function warnStorageFull(){
+    if(storageFullWarned) return;
+    storageFullWarned = true;
+    try{
+      const bar = document.createElement('div');
+      bar.textContent = '⚠️ Penyimpanan perangkat penuh — perubahan terbaru mungkin TIDAK tersimpan. Segera "Save & Export Project" untuk cadangan, lalu hapus layer/data yang tidak perlu.';
+      bar.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:99999;background:#A64B3F;color:#fff;font:600 12px/1.4 "IBM Plex Sans",sans-serif;padding:10px 44px 10px 14px;text-align:center;box-shadow:0 -2px 10px rgba(0,0,0,.25);';
+      const closeBtn = document.createElement('button');
+      closeBtn.textContent = '✖';
+      closeBtn.style.cssText = 'position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:#fff;font-size:14px;cursor:pointer;';
+      closeBtn.addEventListener('click', ()=> bar.remove());
+      bar.appendChild(closeBtn);
+      document.body.appendChild(bar);
+    }catch(e){}
+  }
   window.storage = {
     async get(key, shared){
       try{
@@ -581,7 +653,7 @@ if(!window.storage){
       try{
         localStorage.setItem(key, value);
         return { key, value, shared: !!shared };
-      }catch(e){ return null; }
+      }catch(e){ warnStorageFull(); return null; }
     },
     async delete(key, shared){
       try{
@@ -607,28 +679,31 @@ if(!window.storage){
   // jauh lebih ringan daripada default SVG (satu elemen DOM per poligon). Efeknya
   // paling terasa saat pan/zoom di HP: jadi jauh lebih mulus, terutama HP kelas
   // menengah-bawah dengan banyak layer master ditumpuk.
-  const map = L.map('map', {zoomControl:false, preferCanvas:true}).setView([-6.2088, 106.8456], 14);
+  const map = L.map('map', {zoomControl:false, preferCanvas:true, maxZoom:22}).setView([-6.2088, 106.8456], 14);
   L.control.zoom({position:'topright'}).addTo(map);
 
   // ---------- Basemap (bisa diganti-ganti, tidak cuma Google Hybrid) ----------
   // Catatan: Bing Maps butuh API key berbayar/terdaftar & skema quadkey, jadi
   // sebagai gantinya disediakan Esri World Imagery (citra satelit gratis, kualitas
   // setara) — kalau punya Bing key sendiri, tinggal tambahkan L.tileLayer baru di sini.
+  // maxZoom dibuat lebih tinggi dari maxNativeZoom supaya bisa di-zoom lebih jauh lagi
+  // untuk menggambar presisi (tile terakhir otomatis diperbesar/upscale saat melewati
+  // resolusi asli citranya).
   const baseLayers = {
     '🛰️ Google Hybrid': L.tileLayer('https://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
-      maxZoom:20, subdomains:['mt0','mt1','mt2','mt3'], attribution:'Imagery &copy; Google'
+      maxZoom:22, maxNativeZoom:20, subdomains:['mt0','mt1','mt2','mt3'], attribution:'Imagery &copy; Google'
     }),
     '🛰️ Google Satelit': L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
-      maxZoom:20, subdomains:['mt0','mt1','mt2','mt3'], attribution:'Imagery &copy; Google'
+      maxZoom:22, maxNativeZoom:20, subdomains:['mt0','mt1','mt2','mt3'], attribution:'Imagery &copy; Google'
     }),
     '🗺️ Google Jalan': L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
-      maxZoom:20, subdomains:['mt0','mt1','mt2','mt3'], attribution:'Map data &copy; Google'
+      maxZoom:22, maxNativeZoom:20, subdomains:['mt0','mt1','mt2','mt3'], attribution:'Map data &copy; Google'
     }),
     '🗺️ OpenStreetMap': L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom:19, subdomains:['a','b','c'], attribution:'&copy; OpenStreetMap contributors'
+      maxZoom:22, maxNativeZoom:19, subdomains:['a','b','c'], attribution:'&copy; OpenStreetMap contributors'
     }),
     '🛰️ Citra Esri (mirip Bing)': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-      maxZoom:19, attribution:'Tiles &copy; Esri &mdash; Source: Esri, Maxar, Earthstar Geographics'
+      maxZoom:22, maxNativeZoom:19, attribution:'Tiles &copy; Esri &mdash; Source: Esri, Maxar, Earthstar Geographics'
     })
   };
   baseLayers['🛰️ Google Hybrid'].addTo(map);
@@ -657,7 +732,14 @@ if(!window.storage){
   mapOverlay.addEventListener('click', ()=> setSidebar(false));
   // Mulai tertutup di semua ukuran layar (desktop maupun HP) — konsisten, tinggal ketuk ☰ untuk membuka
   setSidebar(false);
-  window.addEventListener('resize', ()=> setTimeout(()=> map.invalidateSize(), 200));
+  // Satu listener resize dipakai bareng oleh peta & posisi tombol geser, supaya
+  // tidak ada dua handler terpisah yang jalan tiap kali ukuran layar berubah.
+  window.addEventListener('resize', ()=>{
+    setTimeout(()=> map.invalidateSize(), 200);
+    const rect = toggleBtn.getBoundingClientRect();
+    const c = clampToggle(rect.left, rect.top);
+    placeToggle(c.x, c.y);
+  });
 
   // ---------- Tombol menu bisa digeser bebas ----------
   const DRAG_THRESHOLD = 6;
@@ -726,12 +808,6 @@ if(!window.storage){
     if(moved){ moved = false; return; } // abaikan klik jika habis digeser
     setSidebar(sidebar.classList.contains('collapsed'));
   });
-  // Jaga tombol tetap di dalam layar kalau ukuran layar berubah
-  window.addEventListener('resize', ()=>{
-    const rect = toggleBtn.getBoundingClientRect();
-    const c = clampToggle(rect.left, rect.top);
-    placeToggle(c.x, c.y);
-  });
 
   // ---------- Storage ----------
   async function loadBuildings(){
@@ -776,6 +852,18 @@ if(!window.storage){
       await window.storage.set('rt-boundary-drawn', JSON.stringify(geo), false);
     }catch(e){ console.error('Gagal menyimpan batas gambar', e); }
   }
+  async function loadFootprints(){
+    try{
+      const res = await window.storage.get('building-footprints', false);
+      if(res) return JSON.parse(res.value);
+    }catch(e){}
+    return null;
+  }
+  async function saveFootprints(geo){
+    try{
+      await window.storage.set('building-footprints', JSON.stringify(geo), false);
+    }catch(e){ console.error('Gagal menyimpan luas bangunan', e); }
+  }
 
   // ---------- RT boundary (mendukung banyak layer master yang ditumpuk) ----------
   // masterLayers: daftar layer bawaan/hasil upload — tampil di peta tapi TIDAK bisa
@@ -784,6 +872,9 @@ if(!window.storage){
   let masterLayers = []; // {id, name, color, group}
   // userDrawnItems: batas hasil gambar sendiri di peta — bebas diedit & dihapus.
   const userDrawnItems = new L.FeatureGroup().addTo(map);
+  // buildingFootprints: bentuk bangunan hasil telusur citra satelit, lengkap luasnya.
+  const buildingFootprints = new L.FeatureGroup().addTo(map);
+  let footprintSaveTimer = null;
   let drawingActive = false;
   let boundarySaveTimer = null;
 
@@ -901,7 +992,18 @@ if(!window.storage){
     try{
       const fillOpacity = layer._baseStyle && layer._baseStyle.fillOpacity != null ? layer._baseStyle.fillOpacity : 0.05;
       layer.setStyle(Object.assign({fillOpacity}, SELECTED_BOUNDARY_STYLE));
-      layer.bringToFront();
+      // CATATAN: sengaja TIDAK bringToFront() di sini. Layer master, batas gambar
+      // sendiri, dan bentuk bangunan berbagi satu canvas render yang sama —
+      // bringToFront menumpuk layer ini di atas SEMUA layer lain di canvas itu,
+      // termasuk batas gambar sendiri/bentuk bangunan. Akibatnya ketukan berikutnya
+      // di lokasi yang sama akan selalu kena layer master ini duluan (yang tidak
+      // bisa dihapus/diedit), bukan layer yang sebenarnya ingin dihapus/diedit —
+      // ini pernah jadi bug nyata. Urutan tampil sudah benar secara alami karena
+      // layer master dimuat lebih dulu saat aplikasi start (baris init di bagian
+      // bawah file): master di lapisan paling bawah, baru batas gambar sendiri,
+      // baru bentuk bangunan di atasnya — jadi tidak perlu direorder sama sekali.
+      // Perubahan gaya (warna/garis putus-putus) di atas sudah cukup menandai
+      // wilayah yang dipilih tanpa mengganggu urutan tumpuk.
     }catch(e){}
     selectedBoundaryLayer = layer;
   }
@@ -1017,6 +1119,53 @@ if(!window.storage){
     }, 300);
   }
 
+  // ---------- Ukur luas bangunan ----------
+  function computeArea(layer){
+    let latlngs = layer.getLatLngs();
+    if(Array.isArray(latlngs[0])) latlngs = latlngs[0];
+    const area = L.GeometryUtil.geodesicArea(latlngs);
+    return { m2: Math.round(area * 100) / 100, text: L.GeometryUtil.readableArea(area, true) };
+  }
+  function footprintLabelText(name, areaText){
+    return name ? `${name} · ${areaText}` : areaText;
+  }
+  function renderFootprints(geojson){
+    buildingFootprints.clearLayers();
+    L.geoJSON(geojson, {
+      style: {color:'#F5A623', weight:3, fillOpacity:0.25},
+      onEachFeature: (feature, layer) => {
+        const name = (feature.properties && feature.properties.name) || '';
+        const areaText = (feature.properties && feature.properties.area_text) || computeArea(layer).text;
+        layer.feature = feature;
+        layer.bindTooltip(footprintLabelText(name, areaText), {permanent:true, direction:'center', className:'footprint-label'});
+        buildingFootprints.addLayer(layer);
+      }
+    });
+  }
+  function scheduleFootprintSave(){
+    clearTimeout(footprintSaveTimer);
+    footprintSaveTimer = setTimeout(()=>{
+      saveFootprints(buildingFootprints.toGeoJSON());
+    }, 300);
+  }
+  function handleFootprintCreated(layer){
+    // "Gambar Kotak Cepat" menghasilkan L.Rectangle — kalau dibiarkan begitu,
+    // mode "Edit Bentuk" nanti hanya memunculkan 4 titik sudut yang saling
+    // terkunci (menarik satu sudut cuma me-resize kotaknya, tetap siku/persegi).
+    // Diubah jadi L.Polygon biasa (titik & bentuknya sama persis) supaya editnya
+    // sama seperti bentuk hasil telusur: tiap titik sudut bisa ditarik bebas,
+    // dan titik baru bisa ditambah di tengah sisi manapun.
+    if(layer instanceof L.Rectangle){
+      layer = L.polygon(layer.getLatLngs(), layer.options);
+    }
+    const name = prompt('Nama bangunan ini (opsional):', '') || '';
+    const { m2, text } = computeArea(layer);
+    layer.feature = { type:'Feature', properties:{ name, area_m2: m2, area_text: text } };
+    layer.bindTooltip(footprintLabelText(name, text), {permanent:true, direction:'center', className:'footprint-label'});
+    buildingFootprints.addLayer(layer);
+    scheduleFootprintSave();
+  }
+
   const drawControl = new L.Control.Draw({
     position: 'topright',
     draw: {
@@ -1029,6 +1178,27 @@ if(!window.storage){
     edit: { featureGroup: userDrawnItems, remove: true }
   });
   map.addControl(drawControl);
+
+  const footprintDrawControl = new L.Control.Draw({
+    position: 'topright',
+    draw: {
+      polygon: {
+        allowIntersection: false, showArea: true,
+        shapeOptions: {color:'#F5A623', weight:3, fillOpacity:0.25}
+      },
+      rectangle: {
+        shapeOptions: {color:'#F5A623', weight:3, fillOpacity:0.25}
+      },
+      polyline:false, circle:false, circlemarker:false, marker:false
+    },
+    edit: { featureGroup: buildingFootprints, remove: true }
+  });
+  map.addControl(footprintDrawControl);
+
+  // Karena event Leaflet.Draw bersifat global (tidak tahu kontrol mana yang memicu),
+  // kita lacak sendiri alat mana yang sedang aktif supaya event CREATED/EDITED/DELETED
+  // diarahkan ke featureGroup & fungsi simpan yang benar.
+  let activeToolType = null; // 'boundary' | 'footprint'
 
   // ---------- Kontrol kustom "Alat Batas" (gambar/edit/hapus batas gambar sendiri) ----------
   let boundaryMode = null; // null | 'draw' | 'edit' | 'delete'
@@ -1043,7 +1213,8 @@ if(!window.storage){
 
       btBtnEl = L.DomUtil.create('button', 'boundary-tools-btn', container);
       btBtnEl.type = 'button';
-      btBtnEl.innerHTML = '🖊️ Alat Batas <span class="chev">▾</span>';
+      btBtnEl.innerHTML = '🖊️ <span class="chev">▾</span>';
+      btBtnEl.title = 'Alat Batas';
 
       btMenuEl = L.DomUtil.create('div', 'boundary-tools-menu', container);
       renderBoundaryMenu();
@@ -1104,7 +1275,7 @@ if(!window.storage){
       });
     } else if(boundaryMode === 'delete'){
       btMenuEl.innerHTML = `
-        <div class="boundary-tools-status">
+        <div class="boundary-tools-status mode-delete">
           <p>Ketuk batas gambar sendiri (biru) yang ingin dihapus, lalu Simpan untuk konfirmasi.</p>
           <div class="bt-actions">
             <button class="bt-save" data-action="save-delete">✅ Simpan</button>
@@ -1123,6 +1294,7 @@ if(!window.storage){
   }
 
   function startBoundaryMode(action){
+    activeToolType = 'boundary';
     if(action === 'draw') drawControl._toolbars.draw._modes.polygon.handler.enable();
     else if(action === 'edit') drawControl._toolbars.edit._modes.edit.handler.enable();
     else if(action === 'delete') drawControl._toolbars.edit._modes.remove.handler.enable();
@@ -1132,30 +1304,205 @@ if(!window.storage){
     boundaryMode = mode;
     if(btBtnEl){
       btBtnEl.classList.toggle('active', !!mode);
-      btBtnEl.innerHTML = mode
-        ? (mode==='draw' ? '✏️ Menggambar…' : mode==='edit' ? '🔧 Mengedit…' : '🗑️ Menghapus…') + ' <span class="chev">▾</span>'
-        : '🖊️ Alat Batas <span class="chev">▾</span>';
+      btBtnEl.title = mode
+        ? (mode==='draw' ? 'Sedang menggambar batas…' : mode==='edit' ? 'Sedang mengedit batas…' : 'Sedang menghapus batas…')
+        : 'Alat Batas';
+      btBtnEl.innerHTML = (mode ? (mode==='draw' ? '✏️' : mode==='edit' ? '🔧' : '🗑️') : '🖊️') + ' <span class="chev">▾</span>';
     }
     renderBoundaryMenu();
     if(btMenuEl) btMenuEl.classList.add('show');
   }
 
+  // ---------- Kontrol kustom "Ukur Bangunan" (telusur bentuk & hitung luas) ----------
+  let footprintMode = null; // null | 'draw' | 'draw-rect' | 'edit' | 'delete'
+  let fpMenuEl, fpBtnEl;
+
+  const FootprintToolsControl = L.Control.extend({
+    options: { position: 'topright' },
+    onAdd: function(){
+      const container = L.DomUtil.create('div', 'leaflet-bar boundary-tools-control');
+      L.DomEvent.disableClickPropagation(container);
+      L.DomEvent.disableScrollPropagation(container);
+
+      fpBtnEl = L.DomUtil.create('button', 'boundary-tools-btn', container);
+      fpBtnEl.type = 'button';
+      fpBtnEl.innerHTML = '📐 <span class="chev">▾</span>';
+      fpBtnEl.title = 'Ukur Bangunan';
+
+      fpMenuEl = L.DomUtil.create('div', 'boundary-tools-menu', container);
+      renderFootprintMenu();
+
+      L.DomEvent.on(fpBtnEl, 'click', ()=>{
+        fpMenuEl.classList.toggle('show');
+        fpBtnEl.classList.toggle('open', fpMenuEl.classList.contains('show'));
+      });
+      L.DomEvent.on(document, 'click', (e)=>{
+        if(!container.contains(e.target)) fpMenuEl.classList.remove('show');
+      });
+
+      return container;
+    }
+  });
+  map.addControl(new FootprintToolsControl());
+
+  function renderFootprintMenu(){
+    if(!fpMenuEl) return;
+    if(footprintMode === null){
+      fpMenuEl.innerHTML = `
+        <div class="bt-item" data-action="draw"><span class="bt-icon">✏️</span> Telusuri Bentuk Bangunan</div>
+        <div class="bt-item" data-action="draw-rect"><span class="bt-icon">▭</span> Gambar Kotak Cepat</div>
+        <div class="bt-item" data-action="edit"><span class="bt-icon">🔧</span> Edit Bentuk</div>
+        <div class="bt-item" data-action="delete"><span class="bt-icon">🗑️</span> Hapus</div>
+      `;
+      fpMenuEl.querySelectorAll('.bt-item').forEach(item=>{
+        item.addEventListener('click', ()=>{
+          fpMenuEl.classList.remove('show');
+          fpBtnEl.classList.remove('open');
+          startFootprintMode(item.dataset.action);
+        });
+      });
+    } else if(footprintMode === 'draw' || footprintMode === 'draw-rect'){
+      fpMenuEl.innerHTML = `
+        <div class="boundary-tools-status">
+          <p>${footprintMode === 'draw'
+            ? 'Ikuti garis tepi bangunan di citra satelit titik demi titik, lalu klik titik awal lagi untuk menutup bentuknya.'
+            : 'Klik-tarik dari salah satu sudut bangunan ke sudut seberangnya.'}</p>
+          <div class="bt-actions"><button class="bt-cancel" data-action="cancel">✖️ Batal</button></div>
+        </div>`;
+      fpMenuEl.querySelector('[data-action="cancel"]').addEventListener('click', ()=>{
+        const key = footprintMode === 'draw' ? 'polygon' : 'rectangle';
+        footprintDrawControl._toolbars.draw._modes[key].handler.disable();
+      });
+    } else if(footprintMode === 'edit'){
+      fpMenuEl.innerHTML = `
+        <div class="boundary-tools-status">
+          <p>Tarik titik-titik sudut untuk memperbaiki bentuk bangunan. Luasnya dihitung ulang otomatis.</p>
+          <div class="bt-actions">
+            <button class="bt-save" data-action="save-edit">✅ Simpan</button>
+            <button class="bt-cancel" data-action="cancel-edit">✖️ Batal</button>
+          </div>
+        </div>`;
+      fpMenuEl.querySelector('[data-action="save-edit"]').addEventListener('click', ()=>{
+        const h = footprintDrawControl._toolbars.edit._modes.edit.handler;
+        h.save(); h.disable();
+      });
+      fpMenuEl.querySelector('[data-action="cancel-edit"]').addEventListener('click', ()=>{
+        const h = footprintDrawControl._toolbars.edit._modes.edit.handler;
+        h.revertLayers(); h.disable();
+      });
+    } else if(footprintMode === 'delete'){
+      fpMenuEl.innerHTML = `
+        <div class="boundary-tools-status mode-delete">
+          <p>Ketuk bentuk bangunan yang ingin dihapus, lalu Simpan untuk konfirmasi.</p>
+          <div class="bt-actions">
+            <button class="bt-save" data-action="save-delete">✅ Simpan</button>
+            <button class="bt-cancel" data-action="cancel-delete">✖️ Batal</button>
+          </div>
+        </div>`;
+      fpMenuEl.querySelector('[data-action="save-delete"]').addEventListener('click', ()=>{
+        const h = footprintDrawControl._toolbars.edit._modes.remove.handler;
+        h.save(); h.disable();
+      });
+      fpMenuEl.querySelector('[data-action="cancel-delete"]').addEventListener('click', ()=>{
+        const h = footprintDrawControl._toolbars.edit._modes.remove.handler;
+        h.revertLayers(); h.disable();
+      });
+    }
+  }
+
+  function startFootprintMode(action){
+    activeToolType = 'footprint';
+    if(action === 'draw') footprintDrawControl._toolbars.draw._modes.polygon.handler.enable();
+    else if(action === 'draw-rect') footprintDrawControl._toolbars.draw._modes.rectangle.handler.enable();
+    else if(action === 'edit') footprintDrawControl._toolbars.edit._modes.edit.handler.enable();
+    else if(action === 'delete') footprintDrawControl._toolbars.edit._modes.remove.handler.enable();
+  }
+
+  function setFootprintMode(mode){
+    footprintMode = mode;
+    if(fpBtnEl){
+      fpBtnEl.classList.toggle('active', !!mode);
+      const icons = {draw:'✏️', 'draw-rect':'▭', edit:'🔧', delete:'🗑️'};
+      const titles = {draw:'Sedang menelusuri bentuk…', 'draw-rect':'Sedang menggambar kotak…', edit:'Sedang mengedit bentuk…', delete:'Sedang menghapus…'};
+      fpBtnEl.title = mode ? (titles[mode] || 'Aktif…') : 'Ukur Bangunan';
+      fpBtnEl.innerHTML = (mode ? (icons[mode] || '📐') : '📐') + ' <span class="chev">▾</span>';
+    }
+    renderFootprintMenu();
+    if(fpMenuEl) fpMenuEl.classList.add('show');
+  }
+
+  // ---------- Event Leaflet.Draw (dipakai bersama oleh Alat Batas & Ukur Bangunan) ----------
+  // Nonaktifkan sementara interaksi (klik) pada semua layer master saat mode
+  // hapus aktif — supaya tap di lokasi yang ditumpuk layer master tetap kena
+  // batas gambar sendiri / bentuk bangunan di baliknya, bukan malah kena layer
+  // master (yang memang tidak bisa dihapus lewat alat ini). Bentuknya tetap
+  // TAMPIL seperti biasa di peta, cuma tidak lagi merespons klik selama mode
+  // hapus berlangsung — otomatis aktif lagi begitu disimpan atau dibatalkan.
+  function setMasterLayersInteractive(active){
+    masterLayers.forEach(m=>{
+      m.group.eachLayer(layer=>{ layer.options.interactive = active; });
+    });
+  }
+
   map.on(L.Draw.Event.CREATED, (e)=>{
     const layer = e.layer;
+    if(activeToolType === 'footprint'){
+      handleFootprintCreated(layer);
+      return;
+    }
     const name = prompt('Nama/nomor batas ini (misal: RT 03):', '') || 'Tanpa nama';
     layer.feature = {type:'Feature', properties:{name}};
     layer.bindTooltip(name, {permanent:true, direction:'center', className:'rt-label-drawn'});
     userDrawnItems.addLayer(layer);
     scheduleDrawnSave();
   });
-  map.on(L.Draw.Event.EDITED, scheduleDrawnSave);
-  map.on(L.Draw.Event.DELETED, scheduleDrawnSave);
-  map.on(L.Draw.Event.DRAWSTART, ()=> { drawingActive = true; setBoundaryMode('draw'); });
-  map.on(L.Draw.Event.DRAWSTOP, ()=> { drawingActive = false; setBoundaryMode(null); });
-  map.on('draw:editstart', ()=> { drawingActive = true; setBoundaryMode('edit'); });
-  map.on('draw:editstop', ()=> { drawingActive = false; setBoundaryMode(null); });
-  map.on('draw:deletestart', ()=> { drawingActive = true; setBoundaryMode('delete'); });
-  map.on('draw:deletestop', ()=> { drawingActive = false; setBoundaryMode(null); });
+  map.on(L.Draw.Event.EDITED, (e)=>{
+    if(activeToolType === 'footprint'){
+      e.layers.eachLayer(layer=>{
+        const { m2, text } = computeArea(layer);
+        const name = (layer.feature && layer.feature.properties && layer.feature.properties.name) || '';
+        layer.feature.properties.area_m2 = m2;
+        layer.feature.properties.area_text = text;
+        layer.setTooltipContent(footprintLabelText(name, text));
+      });
+      scheduleFootprintSave();
+      return;
+    }
+    scheduleDrawnSave();
+  });
+  map.on(L.Draw.Event.DELETED, ()=>{
+    if(activeToolType === 'footprint'){ scheduleFootprintSave(); return; }
+    scheduleDrawnSave();
+  });
+  map.on(L.Draw.Event.DRAWSTART, ()=>{
+    drawingActive = true;
+    if(activeToolType === 'footprint') setFootprintMode(footprintMode || 'draw'); else setBoundaryMode('draw');
+  });
+  map.on(L.Draw.Event.DRAWSTOP, ()=>{
+    drawingActive = false;
+    if(activeToolType === 'footprint') setFootprintMode(null); else setBoundaryMode(null);
+    activeToolType = null;
+  });
+  map.on('draw:editstart', ()=>{
+    drawingActive = true;
+    if(activeToolType === 'footprint') setFootprintMode('edit'); else setBoundaryMode('edit');
+  });
+  map.on('draw:editstop', ()=>{
+    drawingActive = false;
+    if(activeToolType === 'footprint') setFootprintMode(null); else setBoundaryMode(null);
+    activeToolType = null;
+  });
+  map.on('draw:deletestart', ()=>{
+    drawingActive = true;
+    setMasterLayersInteractive(false);
+    if(activeToolType === 'footprint') setFootprintMode('delete'); else setBoundaryMode('delete');
+  });
+  map.on('draw:deletestop', ()=>{
+    drawingActive = false;
+    setMasterLayersInteractive(true);
+    if(activeToolType === 'footprint') setFootprintMode(null); else setBoundaryMode(null);
+    activeToolType = null;
+  });
 
   document.getElementById('fileInput').addEventListener('change', async (e)=>{
     const files = Array.from(e.target.files || []);
@@ -1241,6 +1588,120 @@ if(!window.storage){
     map.locate({setView:true, maxZoom:18, enableHighAccuracy:true});
   });
 
+  // ---------- Navigasi ke titik/wilayah tujuan ----------
+  // Dua mode: (1) arah lurus + jarak langsung di dalam app (jalan walau offline),
+  // (2) buka aplikasi Maps di HP untuk rute jalan sesungguhnya (butuh internet).
+  let navLine = null, navTargetMarker = null, navPanel = null, navWatchId = null;
+
+  function haversineMeters(lat1, lng1, lat2, lng2){
+    const R = 6371000;
+    const toRad = d => d * Math.PI / 180;
+    const dLat = toRad(lat2 - lat1), dLng = toRad(lng2 - lng1);
+    const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng/2)**2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  }
+  function bearingDegrees(lat1, lng1, lat2, lng2){
+    const toRad = d => d * Math.PI / 180, toDeg = r => r * 180 / Math.PI;
+    const y = Math.sin(toRad(lng2-lng1)) * Math.cos(toRad(lat2));
+    const x = Math.cos(toRad(lat1))*Math.sin(toRad(lat2)) - Math.sin(toRad(lat1))*Math.cos(toRad(lat2))*Math.cos(toRad(lng2-lng1));
+    return (toDeg(Math.atan2(y, x)) + 360) % 360;
+  }
+  function formatDistance(m){
+    return m >= 1000 ? (m/1000).toFixed(2) + ' km' : Math.round(m) + ' m';
+  }
+  function compassLabel(deg){
+    const dirs = ['Utara','Timur Laut','Timur','Tenggara','Selatan','Barat Daya','Barat','Barat Laut'];
+    return dirs[Math.round(deg/45) % 8];
+  }
+
+  function closeNavIndicator(){
+    if(navLine){ map.removeLayer(navLine); navLine = null; }
+    if(navTargetMarker){ map.removeLayer(navTargetMarker); navTargetMarker = null; }
+    if(navPanel){ navPanel.remove(); navPanel = null; }
+    if(navWatchId !== null){ navigator.geolocation.clearWatch(navWatchId); navWatchId = null; }
+  }
+
+  function drawNavIndicator(fromLatLng, toLatLng, targetLabel){
+    if(navLine) map.removeLayer(navLine);
+    if(navTargetMarker) map.removeLayer(navTargetMarker);
+    navLine = L.polyline([fromLatLng, toLatLng], {color:'#F5A623', weight:4, dashArray:'8,8'}).addTo(map);
+    navTargetMarker = L.circleMarker(toLatLng, {radius:8, color:'#fff', weight:3, fillColor:'#F5A623', fillOpacity:1}).addTo(map);
+    map.fitBounds(navLine.getBounds(), {padding:[60,60]});
+
+    const dist = haversineMeters(fromLatLng.lat, fromLatLng.lng, toLatLng.lat, toLatLng.lng);
+    const brg = bearingDegrees(fromLatLng.lat, fromLatLng.lng, toLatLng.lat, toLatLng.lng);
+
+    if(!navPanel){
+      navPanel = document.createElement('div');
+      navPanel.id = 'navPanel';
+      document.getElementById('map-wrap').appendChild(navPanel);
+    }
+    navPanel.innerHTML = `
+      <div class="nav-panel-inner">
+        <div class="nav-arrow" style="transform:rotate(${brg}deg);">➤</div>
+        <div class="nav-info">
+          <strong>${formatDistance(dist)}</strong>
+          <span>ke arah ${compassLabel(brg)} &middot; ${escapeHtml(targetLabel)}</span>
+        </div>
+        <button id="navPanelClose" title="Tutup">✕</button>
+      </div>`;
+    el('navPanelClose').addEventListener('click', closeNavIndicator);
+  }
+
+  function startNavIndicator(toLatLng, targetLabel){
+    if(!navigator.geolocation){
+      alert('Perangkat/browser ini tidak mendukung layanan lokasi.');
+      return;
+    }
+    // Pantau posisi secara berkelanjutan (watchPosition) supaya panah & jarak
+    // ikut ter-update selagi pengguna berjalan menuju titik tujuan.
+    if(navWatchId !== null) navigator.geolocation.clearWatch(navWatchId);
+    navWatchId = navigator.geolocation.watchPosition(
+      (pos)=>{
+        const fromLatLng = L.latLng(pos.coords.latitude, pos.coords.longitude);
+        drawNavIndicator(fromLatLng, toLatLng, targetLabel);
+      },
+      ()=>{
+        alert('Tidak bisa mengambil lokasi GPS. Pastikan izin lokasi browser sudah diaktifkan dan coba lagi di area terbuka.');
+      },
+      { enableHighAccuracy:true, timeout:12000, maximumAge:2000 }
+    );
+  }
+
+  function openInMapsApp(lat, lng){
+    window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=driving`, '_blank');
+  }
+
+  el('btnNavArrow').addEventListener('click', ()=>{
+    if(!draftLatLng) return;
+    setSidebar(false);
+    overlay.classList.remove('show');
+    startNavIndicator(L.latLng(draftLatLng.lat, draftLatLng.lng), el('fName').value || 'Bangunan');
+  });
+  el('btnNavMaps').addEventListener('click', ()=>{
+    if(!draftLatLng) return;
+    openInMapsApp(draftLatLng.lat, draftLatLng.lng);
+  });
+
+  // Diekspos ke window supaya bisa dipanggil dari konten popup Leaflet (HTML string)
+  window.__triggerNavArrow = (lat, lng, label) => {
+    setSidebar(false);
+    map.closePopup();
+    startNavIndicator(L.latLng(lat, lng), label || 'Titik tujuan');
+  };
+  window.__triggerNavMaps = (lat, lng) => openInMapsApp(lat, lng);
+
+  function navPopupHtml(lat, lng, label){
+    const safeLabel = JSON.stringify(label || 'Titik tujuan');
+    return `<div class="popup-nav-wrap">
+      <div class="popup-nav-label">${escapeHtml(label || '')}</div>
+      <div class="popup-nav-buttons">
+        <button onclick='window.__triggerNavArrow(${lat},${lng},${safeLabel})'>🧭 Arah</button>
+        <button onclick='window.__triggerNavMaps(${lat},${lng})'>🗺️ Maps</button>
+      </div>
+    </div>`;
+  }
+
   // ---------- Tandai bangunan langsung di lokasi GPS saat ini ----------
   const tagHereFab = el('tagHereFab');
   tagHereFab.addEventListener('click', ()=>{
@@ -1298,12 +1759,14 @@ if(!window.storage){
     selectedStatus = building ? building.status : 'sudah';
     updateStatusButtons();
     el('btnDelete').style.display = building ? 'inline-flex' : 'none';
+    el('navRow').style.display = building ? 'block' : 'none';
     overlay.classList.add('show');
     el('fName').focus();
   }
   function closeForm(){
     overlay.classList.remove('show');
     editingId = null; draftLatLng = null;
+    closeNavIndicator();
   }
   function updateStatusButtons(){
     el('btnSudah').className = selectedStatus==='sudah' ? 'sel-sudah' : '';
@@ -1348,13 +1811,21 @@ if(!window.storage){
   });
 
   // ---------- Markers ----------
+  // Cuma ada 2 kemungkinan ikon (sudah/belum) — dibuat sekali lalu dipakai ulang,
+  // bukan di-generate ulang (new L.divIcon) tiap kali marker dibuat/status diganti.
+  // Dengan ratusan bangunan tertandai di satu wilkerstat, ini lumayan mengurangi
+  // kerja saat renderList/createMarker dipanggil berulang.
+  const ICON_CACHE = {};
   function iconFor(status){
+    if(ICON_CACHE[status]) return ICON_CACHE[status];
     const color = status==='sudah' ? '#6B8F71' : '#A64B3F';
-    return L.divIcon({
+    const icon = L.divIcon({
       className:'',
       html:`<div style="width:16px;height:16px;border-radius:50% 50% 50% 0;background:${color};border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,0.4);transform:rotate(-45deg);"></div>`,
       iconSize:[16,16], iconAnchor:[8,14]
     });
+    ICON_CACHE[status] = icon;
+    return icon;
   }
   function createMarker(b){
     const m = L.marker([b.lat, b.lng], {icon: iconFor(b.status)}).addTo(map);
@@ -1433,6 +1904,11 @@ if(!window.storage){
       gj.properties = Object.assign({}, gj.properties, {layer: 'drawn-boundary'});
       features.push(gj);
     });
+    buildingFootprints.eachLayer(layer => {
+      const gj = layer.toGeoJSON();
+      gj.properties = Object.assign({}, gj.properties, {layer: 'building-footprint'});
+      features.push(gj);
+    });
     return { type: 'FeatureCollection', features };
   }
 
@@ -1461,8 +1937,9 @@ if(!window.storage){
     await saveBuildings();
     await persistMasterLayers();
     await saveDrawnBoundary(userDrawnItems.toGeoJSON());
+    await saveFootprints(buildingFootprints.toGeoJSON());
 
-    if(buildings.length === 0 && masterLayersFeatureCount() === 0 && userDrawnItems.getLayers().length === 0){
+    if(buildings.length === 0 && masterLayersFeatureCount() === 0 && userDrawnItems.getLayers().length === 0 && buildingFootprints.getLayers().length === 0){
       flashButton(btn, 'Belum ada data');
       return;
     }
@@ -1487,6 +1964,7 @@ if(!window.storage){
       const newBuildings = [];
       const baseFeatures = [];
       const drawnFeatures = [];
+      const footprintFeatures = [];
       data.features.forEach(f => {
         const layerType = f.properties && f.properties.layer;
         if(layerType === 'building' && f.geometry && f.geometry.type === 'Point'){
@@ -1500,6 +1978,8 @@ if(!window.storage){
           });
         } else if(layerType === 'drawn-boundary'){
           drawnFeatures.push(f);
+        } else if(layerType === 'building-footprint'){
+          footprintFeatures.push(f);
         } else if(layerType === 'base-boundary'){
           baseFeatures.push(f);
         } else if(f.geometry && (f.geometry.type === 'Polygon' || f.geometry.type === 'MultiPolygon')){
@@ -1540,6 +2020,10 @@ if(!window.storage){
       const drawnFC = {type:'FeatureCollection', features: drawnFeatures};
       renderDrawnBoundary(drawnFC);
       await saveDrawnBoundary(drawnFC);
+
+      const footprintFC = {type:'FeatureCollection', features: footprintFeatures};
+      renderFootprints(footprintFC);
+      await saveFootprints(footprintFC);
 
       alert('Project berhasil dimuat.');
     }catch(err){
@@ -1610,7 +2094,7 @@ if(!window.storage){
     if(searchPinMarker) map.removeLayer(searchPinMarker);
     map.flyTo([lat, lng], zoom || 17, {duration:0.8});
     searchPinMarker = L.marker([lat, lng]).addTo(map);
-    if(label) searchPinMarker.bindPopup(String(label)).openPopup();
+    searchPinMarker.bindPopup(navPopupHtml(lat, lng, label)).openPopup();
   }
 
   let geocodeController = null;
@@ -1729,7 +2213,9 @@ if(!window.storage){
           const centerMarker = L.circleMarker(center, {
             radius:10, color:'#fff', weight:3, fillColor:'#FFC94A', fillOpacity:1
           }).addTo(map);
-          setTimeout(()=>{ try{ map.removeLayer(centerMarker); }catch(e){} }, 2200);
+          const wilayahLabel = (m.rt || 'Wilayah') + (m.sub ? ' sub ' + m.sub : '');
+          centerMarker.bindPopup(navPopupHtml(center.lat, center.lng, wilayahLabel));
+          setTimeout(()=>{ try{ map.removeLayer(centerMarker); }catch(e){} }, 8000);
 
           // Tampilkan juga label wilayahnya (nama RT/SLS + kelurahan) saat dipilih dari pencarian.
           // Label batas gambar sendiri sudah selalu tampil, jadi tidak perlu disentuh di sini.
@@ -1805,6 +2291,9 @@ if(!window.storage){
 
   const savedDrawn = await loadDrawnBoundary();
   if(savedDrawn){ renderDrawnBoundary(savedDrawn); }
+
+  const savedFootprints = await loadFootprints();
+  if(savedFootprints){ renderFootprints(savedFootprints); }
 
   if(masterLayersFeatureCount() === 0 && userDrawnItems.getLayers().length === 0){
     autoLocateByIP();
